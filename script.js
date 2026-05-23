@@ -1,63 +1,60 @@
 const API_URL = "https://kalixo.pythonanywhere.com";
 
-// Test backend connection
-fetch(`${API_URL}/api/message`)
-  .then(response => response.json())
-  .then(data => {
+function scrollToApps(){
+  document.getElementById("apps").scrollIntoView();
+}
 
-    console.log(data.message);
+function sendMessage(){
 
-    const msg = document.createElement("h2");
-    msg.innerText = data.message;
+  const input = document.getElementById("chatInput");
+  const chatBox = document.getElementById("chatBox");
 
-    msg.style.color = "#d4af37";
-    msg.style.textAlign = "center";
-    msg.style.marginTop = "20px";
+  if(input.value.trim() === "") return;
 
-    document.body.appendChild(msg);
+  const div = document.createElement("div");
 
-  })
-  .catch(error => {
-    console.log("Backend connection failed");
-  });
+  div.className = "message";
 
-// Contact form
-const form = document.getElementById("contactForm");
+  div.innerText = input.value;
 
-if(form){
+  chatBox.appendChild(div);
 
-  form.addEventListener("submit", async (e) => {
+  input.value = "";
 
-    e.preventDefault();
-
-    const data = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      message: document.getElementById("message").value
-    };
-
-    try{
-
-      const response = await fetch(`${API_URL}/api/contact`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
-
-      const result = await response.json();
-
-      alert(result.message);
-
-      form.reset();
-
-    }catch(error){
-
-      alert("Failed to send message");
-
-    }
-
-  });
+  chatBox.scrollTop = chatBox.scrollHeight;
 
 }
+
+const loginForm = document.getElementById("loginForm");
+
+loginForm.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try{
+
+    const response = await fetch(`${API_URL}/api/login`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        username,
+        password
+      })
+    });
+
+    const result = await response.json();
+
+    alert(result.message);
+
+  }catch(error){
+
+    alert("Server Error");
+
+  }
+
+});
