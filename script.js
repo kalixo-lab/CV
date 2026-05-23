@@ -1,17 +1,55 @@
-window.addEventListener('scroll',()=>{
-  const nav=document.querySelector('nav');
+const API_URL = "https://YOUR_USERNAME.pythonanywhere.com";
 
-  if(window.scrollY>50){
-    nav.style.boxShadow='0 0 20px rgba(212,175,55,0.3)';
-  }else{
-    nav.style.boxShadow='none';
+document.getElementById("apiBtn").addEventListener("click", async () => {
+
+  try{
+
+    const response = await fetch(`${API_URL}/api/message`);
+    const data = await response.json();
+
+    document.getElementById("apiMessage").innerText = data.message;
+
+  }catch(error){
+
+    document.getElementById("apiMessage").innerText =
+    "Backend connection failed";
+
   }
+
 });
 
-const form=document.getElementById('contactForm');
+const form = document.getElementById("contactForm");
 
-form.addEventListener('submit',(e)=>{
+form.addEventListener("submit", async (e) => {
+
   e.preventDefault();
-  alert('Message Sent Successfully!');
-  form.reset();
+
+  const data = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    message: document.getElementById("message").value
+  };
+
+  try{
+
+    const response = await fetch(`${API_URL}/api/contact`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    alert(result.message);
+
+    form.reset();
+
+  }catch(error){
+
+    alert("Failed to send message");
+
+  }
+
 });
