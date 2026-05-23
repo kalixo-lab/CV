@@ -1,4 +1,4 @@
-const API_URL = "https://YOUR_USERNAME.pythonanywhere.com";
+const API_URL = "https://kalixo.pythonanywhere.com";
 
 document.getElementById("apiBtn").addEventListener("click", async () => {
 
