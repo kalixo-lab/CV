@@ -1,55 +1,63 @@
 const API_URL = "https://kalixo.pythonanywhere.com";
 
-document.getElementById("apiBtn").addEventListener("click", async () => {
+// Test backend connection
+fetch(`${API_URL}/api/message`)
+  .then(response => response.json())
+  .then(data => {
 
-  try{
+    console.log(data.message);
 
-    const response = await fetch(`${API_URL}/api/message`);
-    const data = await response.json();
+    const msg = document.createElement("h2");
+    msg.innerText = data.message;
 
-    document.getElementById("apiMessage").innerText = data.message;
+    msg.style.color = "#d4af37";
+    msg.style.textAlign = "center";
+    msg.style.marginTop = "20px";
 
-  }catch(error){
+    document.body.appendChild(msg);
 
-    document.getElementById("apiMessage").innerText =
-    "Backend connection failed";
+  })
+  .catch(error => {
+    console.log("Backend connection failed");
+  });
 
-  }
-
-});
-
+// Contact form
 const form = document.getElementById("contactForm");
 
-form.addEventListener("submit", async (e) => {
+if(form){
 
-  e.preventDefault();
+  form.addEventListener("submit", async (e) => {
 
-  const data = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    message: document.getElementById("message").value
-  };
+    e.preventDefault();
 
-  try{
+    const data = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      message: document.getElementById("message").value
+    };
 
-    const response = await fetch(`${API_URL}/api/contact`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(data)
-    });
+    try{
 
-    const result = await response.json();
+      const response = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
 
-    alert(result.message);
+      const result = await response.json();
 
-    form.reset();
+      alert(result.message);
 
-  }catch(error){
+      form.reset();
 
-    alert("Failed to send message");
+    }catch(error){
 
-  }
+      alert("Failed to send message");
 
-});
+    }
+
+  });
+
+}
